@@ -1,25 +1,45 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import "Draggable.css";
+import React, { useCallback, useMemo, useEffect, useRef, useState } from "react";
+import "./Draggable.css";
+import { debounce } from "lodash";
 
 function Draggable({ children, handleRef, onMove, x, y }) {
   const RefDrag = useRef(null);
   const initialX = useRef(0);
   const initialY = useRef(0);
+  const [position, setPosition] = useState({ x, y });
 
-  const onMouseMove = () => {};
+  const Move = useMemo(() => debounce((x, y) => onMove(x, y), 500), [onMove]);
 
-  const onRemove = () => {};
+  const onMouseMove = useCallback(
+    (event) => {
+      setPosition({
+        x: event.clientX - initialX.current,
+        y: event.clientY - initialY.current,
+      });
 
-  const onMouseDown = useCallback((event) => {
-    const { left, top } = RefDrag.current.getBoundingClientRect();
-    initialX = event.clientX - left;
-    initialY = event.clientY - top;
+      Move(event.clientX - initialX.current, event.clientY - initialY.current);
+    },
+    [Move]
+  );
 
-    document.addEventListener("mousemove", onMouseMove);
+  const onRemove = useCallback(() => {
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onRemove);
+    document.body.removeEventListener("mouseleave", onRemove);
+  }, [onMouseMove]);
 
-    document.addEventListener("mouseup", onRemove);
-    document.body.addEventListener("mouseleave", onRemove);
-  }, []);
+  const onMouseDown = useCallback(
+    (event) => {
+      const { left, top } = RefDrag.current.getBoundingClientRect();
+      initialX.current = event.clientX - left;
+      initialY.current = event.clientY - top;
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onRemove);
+      document.body.addEventListener("mouseleave", onRemove);
+    },
+    [onMouseMove, onRemove]
+  );
 
   useEffect(() => {
     const handle = handleRef.current;
@@ -32,7 +52,7 @@ function Draggable({ children, handleRef, onMove, x, y }) {
   }, [handleRef, onMouseDown]);
 
   return (
-    <div ref={RefDrag} className="draggable" style={{ transform: `translate(${0}px, ${0}px)` }}>
+    <div ref={RefDrag} className="draggable" style={{ transform: `translate(${position.x}px, ${position.y}px)` }}>
       {children}
     </div>
   );
