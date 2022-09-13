@@ -1,6 +1,6 @@
 {
-  "name": "@ham/draggable-ui",
-  "version": "1.0.1",
+  "name": "@hamju-fe/draggable-ui",
+  "version": "1.0.0",
   "module": "dist/Draggable.js",
   "main": "dist/Draggable.js",
   "dependencies": {
@@ -19,6 +19,11 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "publish": "rm -rf dist && mkdir dist && babel src/lib -d dist --copy-files"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-react"
+    ]
   },
   "eslintConfig": {
     "extends": [
@@ -41,10 +46,5 @@
   "devDependencies": {
     "@babel/cli": "^7.18.10",
     "@babel/preset-react": "^7.18.6"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-react"
-    ]
   }
 }
