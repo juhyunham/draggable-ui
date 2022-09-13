@@ -2,6 +2,8 @@
 
 #custom
 /.history
+/public
+/src
 
 # dependencies
 /node_modules
