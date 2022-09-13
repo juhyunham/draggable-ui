@@ -1,8 +1,9 @@
 {
-  "name": "@hamju-fe/draggable-ui",
+  "name": "@juham/draggable",
   "version": "1.0.0",
   "module": "dist/Draggable.js",
   "main": "dist/Draggable.js",
+  "private": false,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
